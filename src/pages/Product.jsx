@@ -64,7 +64,6 @@ class Product extends React.Component {
       console.log('aq');
       const reviews = JSON.parse(localStorage.getItem('reviews'))
         .filter((review) => review.id === id);
-      console.log(reviews);
       this.setState({ reviewList: [...reviews] });
     }
   };
