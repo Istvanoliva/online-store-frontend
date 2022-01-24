@@ -8,8 +8,10 @@ class CardFav extends React.Component {
     this.handleClick = this.handleClick.bind(this);
 
     this.state = {
+      produto: {},
       loading: false,
       productQuantity: 1,
+      notAvailable: false,
     };
   }
 
@@ -19,13 +21,13 @@ class CardFav extends React.Component {
 
   handleClick(event) {
     const { name } = event.target;
-    const { productQuantity } = this.state;
+    const { productQuantity, produto: { available_quantity: available } } = this.state;
     const prevState = productQuantity;
-    if (name === 'add') {
-      this.setState({ productQuantity: prevState + 1 });
-      /* this.setState((state) => {
-        this.setState({ productQuantity: state.productQuantity + 1 });
-      }); */
+    if (name === 'add' && prevState < available) {
+      this.setState({ productQuantity: prevState + 1 }, () => {
+        const { productQuantity: quantity } = this.state;
+        if (quantity === available) this.setState({ notAvailable: true });
+      });
     } else if (prevState > 0) this.setState({ productQuantity: prevState - 1 });
   }
 
@@ -49,9 +51,9 @@ class CardFav extends React.Component {
     }
 
     render() {
-      const { loading, produto, productQuantity } = this.state;
+      const { loading, produto, productQuantity, notAvailable } = this.state;
       return (
-        <div>
+        <main>
           { loading && (
             <div>
               <p data-testid="shopping-cart-product-name">{produto.title}</p>
@@ -70,6 +72,7 @@ class CardFav extends React.Component {
                   type="button"
                   name="add"
                   onClick={ this.handleClick }
+                  disabled={ notAvailable }
                 >
                   +
                 </button>
@@ -80,9 +83,10 @@ class CardFav extends React.Component {
                 >
                   x
                 </button>
+                { notAvailable && <span>Não há mais em estoque</span> }
               </div>
             </div>)}
-        </div>
+        </main>
       );
     }
 }
