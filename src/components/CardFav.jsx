@@ -21,13 +21,13 @@ class CardFav extends React.Component {
 
   handleClick(event) {
     const { name } = event.target;
-    const { productQuantity, produto: { available_quantity } } = this.state;
+    const { productQuantity, produto: { available_quantity: available } } = this.state;
     const prevState = productQuantity;
-    if (name === 'add' && prevState < available_quantity) {
+    if (name === 'add' && prevState < available) {
       this.setState({ productQuantity: prevState + 1 }, () => {
         const { productQuantity: quantity } = this.state;
-        if ( quantity === available_quantity) this.setState({ notAvailable: true });
-      })
+        if (quantity === available) this.setState({ notAvailable: true });
+      });
     } else if (prevState > 0) this.setState({ productQuantity: prevState - 1 });
   }
 
